@@ -23,7 +23,7 @@ const BIG_LYRICS = [
   "DEBÍ TIRAR MÁS FOTOS",
   "PUERTO RICO EN CASA",
   "EL VERANO SIGUE VIVO",
-  "PERREO HASTA EL SUELO"
+  "PERREO HASTA EL PISO"
 ];
 
 const stage = document.getElementById("stage");
@@ -31,35 +31,30 @@ const resetBtn = document.getElementById("resetBtn");
 
 let zIndexActual = 10;
 let totalClicks = 0;
-let stickerEspecial = null;
 let fraseGrandeActiva = false;
-let fraseGrandeElemento = null;
 
 
-
-// escoge un elemento aleatorio de un arreglo
+/* escoge una opción al azar del arreglo */
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// número aleatorio entre min y max
+/* saca un número aleatorio entre mínimo y máximo */
 function rand(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-/* CREAR STICKER */
 
+/* crea un sticker nuevo en la posición donde se hizo clic */
 function crearSticker(x, y) {
   const img = document.createElement("img");
-  img.src = pick(ASSETS);
-  img.className = "piece";
 
+  img.src = pick(ASSETS);
+  img.className = "sticker";
   img.style.left = x + "px";
   img.style.top = y + "px";
   img.style.width = rand(160, 260) + "px";
   img.style.zIndex = ++zIndexActual;
-
-  // guardamos rotación y escala
   img.dataset.rot = rand(-20, 20);
   img.dataset.scale = 1;
 
@@ -67,42 +62,37 @@ function crearSticker(x, y) {
   hacerArrastrable(img);
   activarEventosSticker(img);
 
-  stage.appendChild(img);
-
-  elegirStickerEspecial();
+  stage.append(img);
 }
 
 
+/* actualiza el giro y el tamaño del sticker */
 function actualizarTransform(sticker) {
   const rot = sticker.dataset.rot;
   const scale = sticker.dataset.scale;
 
   sticker.style.transform =
     `translate(-50%, -50%) rotate(${rot}deg) scale(${scale})`;
-
-  sticker.style.setProperty("--base-rot", rot + "deg");
-  sticker.style.setProperty("--base-scale", scale);
 }
 
-/* ARRASTRAR  */
 
+/* hace que el sticker se pueda mover con el mouse */
 function hacerArrastrable(sticker) {
   let moviendo = false;
   let offsetX = 0;
   let offsetY = 0;
 
-  sticker.addEventListener("mousedown", (e) => {
-    if (sticker.classList.contains("consume")) return;
-
+  sticker.addEventListener("mousedown", e => {
     moviendo = true;
     sticker.style.zIndex = ++zIndexActual;
 
     const rect = sticker.getBoundingClientRect();
+
     offsetX = e.clientX - (rect.left + rect.width / 2);
     offsetY = e.clientY - (rect.top + rect.height / 2);
   });
 
-  window.addEventListener("mousemove", (e) => {
+  window.addEventListener("mousemove", e => {
     if (!moviendo) return;
 
     sticker.style.left = e.clientX - offsetX + "px";
@@ -114,37 +104,28 @@ function hacerArrastrable(sticker) {
   });
 }
 
-/* EVENTOS DEL STICKER */
 
+/* aquí va todo lo que puede pasar con cada sticker */
 function activarEventosSticker(sticker) {
-  // click normal
-  sticker.addEventListener("click", (e) => {
+
+  /* clic normal */
+  sticker.addEventListener("click", e => {
     e.stopPropagation();
 
     totalClicks++;
 
-    // si es el sticker especial, se clickea
-    if (sticker === stickerEspecial) {
-      elegirStickerEspecial(sticker);
-      return;
-    }
-
-    // cada 3 clics: frases pequeñas
     if (totalClicks % 3 === 0) {
       explosionFrases();
     }
 
-    // cada 10 clics: frase grande
     if (totalClicks % 10 === 0) {
       mostrarFraseGrande();
     }
   });
 
-  // doble clic = agrandar o devolver
-  sticker.addEventListener("dblclick", (e) => {
+  /* doble clic: agranda o vuelve al tamaño normal */
+  sticker.addEventListener("dblclick", e => {
     e.stopPropagation();
-
-    if (sticker.classList.contains("consume")) return;
 
     if (Number(sticker.dataset.scale) === 1) {
       sticker.dataset.scale = 1.4;
@@ -155,16 +136,13 @@ function activarEventosSticker(sticker) {
     actualizarTransform(sticker);
   });
 
-  // scroll = girar
-    sticker.addEventListener("wheel", (e) => {
+  /* scroll: gira el sticker y además saca frases */
+  sticker.addEventListener("wheel", e => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (sticker.classList.contains("consume")) return;
-
     const delta = Math.sign(e.deltaY);
 
-    // gira el sticker
     if (delta > 0) {
       sticker.dataset.rot = Number(sticker.dataset.rot) + 10;
     } else {
@@ -172,17 +150,17 @@ function activarEventosSticker(sticker) {
     }
 
     actualizarTransform(sticker);
-
-    // al hacer scroll también explotan frases por toda la pantalla
     explosionFrases();
+
   }, { passive: false });
 }
 
-/* FRASES PEQUEÑAS */
 
+/* crea una frase pequeña en una parte aleatoria de la pantalla */
 function crearFrase(texto) {
   const frase = document.createElement("div");
-  frase.className = "lyricBurst";
+
+  frase.className = "fraseExplota";
   frase.textContent = texto;
 
   frase.style.left = rand(0, window.innerWidth) + "px";
@@ -192,13 +170,15 @@ function crearFrase(texto) {
   frase.style.setProperty("--ty", rand(-250, 250) + "px");
   frase.style.setProperty("--rot", rand(-30, 30) + "deg");
 
-  document.body.appendChild(frase);
+  document.body.append(frase);
 
   setTimeout(() => {
     frase.remove();
   }, 1600);
 }
 
+
+/* lanza varias frases seguidas para que se vea como explosión */
 function explosionFrases() {
   for (let i = 0; i < 15; i++) {
     setTimeout(() => {
@@ -207,85 +187,46 @@ function explosionFrases() {
   }
 }
 
-/* FRASE GRANDE */
 
+/* muestra la frase grande cada 10 clics */
 function mostrarFraseGrande() {
   if (fraseGrandeActiva) return;
 
   fraseGrandeActiva = true;
 
   const frase = document.createElement("div");
-  frase.className = "bigLyric";
+  frase.className = "fraseGrande";
   frase.textContent = pick(BIG_LYRICS);
-
-  // escala inicial
   frase.dataset.scale = 1;
 
-  document.body.appendChild(frase);
-  fraseGrandeElemento = frase;
+  document.body.append(frase);
 
   frase.addEventListener("click", () => {
     let scaleActual = Number(frase.dataset.scale);
 
-    // cada clic la hace crecer más grande
     scaleActual += 0.8;
-
     frase.dataset.scale = scaleActual;
-    frase.style.transform = `translate(-50%, -50%) scale(${scaleActual})`;
 
-    // cuando ya está muy grande, desaparece
+    frase.style.transform =
+      `translate(-50%, -50%) scale(${scaleActual})`;
+
     if (scaleActual >= 6) {
       frase.classList.add("done");
 
       setTimeout(() => {
         frase.remove();
         fraseGrandeActiva = false;
-        fraseGrandeElemento = null;
       }, 350);
     }
   });
-
 }
 
-/* STICKER ESPECIAL */
 
-function elegirStickerEspecial() {
-  const stickers = document.querySelectorAll(".piece");
-
-  // quitar vibración anterior
-  stickers.forEach((sticker) => {
-    sticker.classList.remove("targetPulse");
-  });
-
-  if (stickers.length === 0) {
-    stickerEspecial = null;
-    return;
-  }
-
-  stickerEspecial = pick([...stickers]);
-  stickerEspecial.classList.add("targetPulse");
-}
-
-function elegirStickerEspeciall(sticker) {
-  sticker.classList.remove("targetPulse");
-  sticker.classList.add("consume");
-  sticker.style.zIndex = 999;
-
-  explosionFrases();
-
-  setTimeout(() => {
-    sticker.remove();
-    elegirStickerEspecial();
-  }, 1400);
-}
-
-/* CLICK EN EL FONDO*/
-
-stage.addEventListener("click", (e) => {
-  if (e.target.classList.contains("piece")) return;
+/* clic en el fondo: crea sticker nuevo */
+stage.addEventListener("click", e => {
+  if (e.target.classList.contains("sticker")) return;
 
   crearSticker(e.clientX, e.clientY);
-
   totalClicks++;
 
   if (totalClicks % 3 === 0) {
@@ -297,21 +238,19 @@ stage.addEventListener("click", (e) => {
   }
 });
 
-/* RESET*/
 
+/* botón reset: limpia todo */
 resetBtn.addEventListener("click", () => {
   stage.innerHTML = "";
   totalClicks = 0;
-  stickerEspecial = null;
   fraseGrandeActiva = false;
-  fraseGrandeElemento = null;
 
-  document.querySelectorAll(".lyricBurst").forEach((el) => el.remove());
-  document.querySelectorAll(".bigLyric").forEach((el) => el.remove());
+  document.querySelectorAll(".fraseExplota").forEach(el => el.remove());
+  document.querySelectorAll(".fraseGrande").forEach(el => el.remove());
 });
 
-/* STICKERS INICIALES */
 
+/* apenas carga la página, salen unos stickers de entrada */
 window.addEventListener("load", () => {
   const cx = window.innerWidth / 2;
   const cy = window.innerHeight / 2;
