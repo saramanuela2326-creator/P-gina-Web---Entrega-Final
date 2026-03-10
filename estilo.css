@@ -1,123 +1,192 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
+/* Estilos generales de toda la página */
 body{
-background:#000;
-color:#fff;
-font-family:Arial, Helvetica, sans-serif;
-overflow:hidden;
-min-height:100vh;
+  background:#000; /* fondo negro */
+  color:#fff; /* texto blanco */
+  font-family:Arial, Helvetica, sans-serif; /* fuente general */
+  min-height:100vh; /* altura mínima = toda la pantalla */
+  overflow:hidden; /* evita scroll */
+
+  display:flex; /* usamos flexbox para organizar contenido */
+  flex-direction:column; /* elementos uno debajo del otro */
+  align-items:center; /* centra horizontalmente */
 }
 
-/* HEADER CENTRADO */
-
-.top{
-position:fixed;
-top:0;
-width:100%;
-display:flex;
-flex-direction:column;
-align-items:center;
-padding:25px;
-z-index:20;
+/* HEADER */
+.hero{
+  width:100%; /* ocupa todo el ancho */
+  display:flex; /* activa flexbox */
+  justify-content:center; /* centra horizontalmente */
+  align-items:center; /* centra verticalmente */
+  text-align:center; /* centra el texto */
+  padding-top:40px; /* separa el título de la parte superior */
+  z-index:10; /* lo pone por encima de otros elementos */
 }
 
-/* TITULO */
+/* TÍTULO PRINCIPAL */
+.titulo{
+  font-family:"Anton", sans-serif; /* tipografía principal */
+  font-size: clamp(70px, 12vw, 160px); 
+  /* tamaño adaptable según pantalla */
 
-.title{
-font-family:"Anton", sans-serif;
-font-size: clamp(48px,7vw,96px);
-letter-spacing:4px;
+  line-height:0.9; /* reduce espacio entre líneas */
+  letter-spacing:4px; /* espacio entre letras */
+  text-transform:uppercase; /* convierte todo a mayúsculas */
 
-background: linear-gradient(90deg,#ff0066,#ff8a00,#a100ff,#00b7ff);
-background-size:400%;
-
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-
-animation:grad 6s linear infinite;
+  display:inline-block; /* permite transformaciones visuales */
+  cursor:pointer; /* cambia el cursor al pasar encima */
+  user-select:none; /* evita que el texto se seleccione */
 }
 
-@keyframes grad{
-0%{background-position:0%}
-100%{background-position:400%}
+/* 
+  Cada letra del título se mete en un span con clase .ch
+  para poder animarlas individualmente
+*/
+.titulo .ch{
+  display:inline-block; /* necesario para animar cada letra */
+  will-change: transform, filter, opacity;
+  /* le avisa al navegador que estas propiedades cambiarán */
+
+  background: linear-gradient(90deg, #00ff4c, #00b7ff, #a100ff, #ff8a00);
+  background-size:500% 500%;
+  /* gradiente multicolor grande para que se note el movimiento */
+
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent;
+  -webkit-text-fill-color:transparent;
+  /* esto hace que el gradiente se vea dentro de la letra */
+
+  animation: gradientMove 3.2s linear infinite;
+  /* movimiento constante del color */
 }
 
-/* BOTONES */
-
-.controls{
-display:flex;
-gap:12px;
-margin-top:12px;
+/* Animación del gradiente */
+@keyframes gradientMove{
+  0%{ background-position:0% 50%; }
+  50%{ background-position:100% 50%; }
+  100%{ background-position:0% 50%; }
 }
 
-.btn{
-padding:8px 14px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.2);
-background:rgba(0,0,0,.3);
-color:white;
-cursor:pointer;
+/* EFECTO GLITCH */
+
+/* 
+  Cuando JS le agrega la clase .glitch a una letra,
+  se activa esta animación corta de vibración y sombras de color
+*/
+.titulo .glitch{
+  animation: glitchRGB 140ms steps(2, end) 3;
 }
 
-.btn:hover{
-background:rgba(255,255,255,.1);
+/* Animación del glitch */
+@keyframes glitchRGB{
+  0%{
+    transform: translate(0,0) skewX(0deg);
+    filter: drop-shadow(-3px 0 #00ffee)
+            drop-shadow(3px 0 #ff00cc)
+            drop-shadow(0 2px #ffcc00);
+  }
+  25%{
+    transform: translate(-2px,1px) skewX(8deg);
+    filter: drop-shadow(-5px 0 #00ff4c)
+            drop-shadow(5px 0 #a100ff)
+            drop-shadow(0 -2px #ff8a00);
+  }
+  50%{
+    transform: translate(3px,-1px) skewX(-10deg);
+    filter: drop-shadow(-4px 0 #00b7ff)
+            drop-shadow(4px 0 #ff0066)
+            drop-shadow(0 2px #00ff4c);
+  }
+  75%{
+    transform: translate(-3px,0) skewX(12deg);
+    filter: drop-shadow(-6px 0 #ffcc00)
+            drop-shadow(6px 0 #00ffee)
+            drop-shadow(0 -2px #a100ff);
+  }
+  100%{
+    transform: translate(0,0) skewX(0deg);
+    filter:none;
+  }
 }
 
-.ghost{
-background:transparent;
+/* LETRA QUE "CAE" */
+
+/* 
+  La clase .fall hace que una letra se incline y baje un poco,
+  como si se tropezara o se cayera
+*/
+.titulo .fall{
+  animation: fall 520ms ease-in-out 1, gradientMove 1.6s linear infinite !important;
+  transform-origin:20% 80%;
+  /* cambia el punto desde donde rota la letra */
 }
 
-/* STAGE */
-
-.stage{
-position:fixed;
-inset:0;
-padding-top:160px;
+@keyframes fall{
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+  35%  { transform: translate(2px,12px) rotate(20deg) scale(1.03); }
+  70%  { transform: translate(-1px,6px) rotate(-12deg) scale(1.01); }
+  100% { transform: translate(0,0) rotate(0deg) scale(1); }
 }
 
-/* STICKERS */
+/* LETRA QUE "ESCAPA" */
 
-.piece{
-position:absolute;
-left:50%;
-top:50%;
-
-transform:translate(-50%,-50%);
-cursor:grab;
-
-filter:drop-shadow(0 18px 30px rgba(0,0,0,.6));
+/* 
+  La clase .escape hace que una letra salga disparada
+  fuera de la pantalla y luego vuelva al estado normal
+*/
+.titulo .escape{
+  animation: escape 820ms cubic-bezier(.2,.9,.2,1) 1;
+  position:relative;
+  z-index:5;
 }
 
-/* FONDO LUCES */
-
-.lights{
-position:fixed;
-inset:-30%;
-z-index:-3;
-
-background:
-radial-gradient(circle at 20% 20%,rgba(255,0,102,.5),transparent 40%),
-radial-gradient(circle at 80% 30%,rgba(255,138,0,.5),transparent 45%),
-radial-gradient(circle at 40% 80%,rgba(161,0,255,.4),transparent 50%);
-
-filter:blur(120px);
-animation:drift 10s infinite alternate ease-in-out;
+@keyframes escape{
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity:1; }
+  25%  { transform: translate(8px,-10px) rotate(18deg) scale(1.05); }
+  60%  { transform: translate(120vw,-35vh) rotate(220deg) scale(0.9); opacity:0.2; }
+  100% { transform: translate(0,0) rotate(0deg) scale(1); opacity:1; }
 }
 
-@keyframes drift{
-0%{transform:scale(1)}
-100%{transform:scale(1.2)}
+/* =========================
+   SECCIÓN DE ARTISTAS
+   ========================= */
+.artistas{
+  width:100%;
+  max-width:1400px; /* limita ancho máximo */
+
+  display:flex; /* organiza los artistas en fila */
+  justify-content:center; /* los centra */
+  align-items:flex-end; /* alinea las imágenes abajo */
+  gap:60px; /* espacio entre artistas */
+
+  margin-top:auto; /* empuja esta sección hacia abajo */
+  padding:0 20px 35px; /* espacio lateral e inferior */
+
+  flex-wrap:nowrap; /* evita salto de línea */
 }
 
-.grain{
-position:fixed;
-inset:0;
-opacity:.08;
-pointer-events:none;
-background-image:
-repeating-linear-gradient(0deg,#fff1 0,#fff1 1px,transparent 1px,transparent 3px);
+/* enlace de cada artista */
+.artista{
+  display:block;
+  transition:transform 0.25s ease; /* suaviza el hover */
+}
+
+/* imagen de cada artista */
+.artista img{
+  height:420px; /* altura fija */
+  width:auto; /* ancho proporcional */
+  max-width:100%;
+  object-fit:contain; /* evita deformación */
+  display:block;
+}
+
+/* agranda un poco al pasar el mouse */
+.artista:hover{
+  transform:scale(1.08);
 }

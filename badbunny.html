@@ -1,42 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bad Bunny World</title>
+  <title>Bad Bunny World</title>
 
-<link rel="stylesheet" href="badbunny.css">
+  <link rel="stylesheet" href="badbunny.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<div class="lights"></div>
-<div class="grain"></div>
+  <!-- capa para cambiar SOLO el fondo -->
+  <div class="bgShift"></div>
 
-<header class="top">
+  <!-- luces de fondo -->
+  <div class="lights"></div>
 
-<h1 class="title">BAD BUNNY WORLD</h1>
+  <!-- textura/grano -->
+  <div class="grain"></div>
 
-<div class="controls">
-<button id="resetBtn" class="btn">Reset</button>
-<a href="index.html" class="btn ghost">← Volver</a>
-</div>
+  <header class="top">
+    <h1 class="title">BAD BUNNY WORLD</h1>
 
-</header>
+    <div class="controls">
+      <button id="resetBtn" class="btn">Reset</button>
+      <a href="index.html" class="btn ghost">← Volver</a>
+    </div>
 
-<main id="stage" class="stage"></main>
+    <p class="hintText">
+      Haz clic, arrastra, gira y prueba combinaciones. A veces el collage responde con cosas que no esperas.
+    </p>
+  </header>
 
-<audio autoplay loop>
-<source src="assets/badbunny.mp3" type="audio/mpeg">
-</audio>
+  <main id="stage" class="stage"></main>
 
-<script src="badbunny.js"></script>
+  <audio autoplay loop>
+    <source src="assets/badbunny.mp3" type="audio/mpeg">
+  </audio>
 
+  <script src="badbunny.js"></script>
 </body>
 </html>
