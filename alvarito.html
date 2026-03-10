@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alvarito Díaz World</title>
+
+  <link rel="stylesheet" href="alvarito.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="fondoColor"></div>
+  <div class="lucesFondo"></div>
+
+  <header class="encabezado">
+    <h1 class="tituloPrincipal">ALVARITO DÍAZ WORLD</h1>
+
+    <div class="botones">
+      <button id="resetBtn" class="boton">Reset</button>
+      <a href="index.html" class="boton transparente">← Volver</a>
+    </div>
+
+    <p class="instrucciones">
+      Haz clic, arrastra, gira y prueba combinaciones. A veces el collage responde con cosas inesperadas.
+    </p>
+  </header>
+
+  <main id="stage" class="stage"></main>
+
+  <audio autoplay loop>
+    <source src="assets/alvarito.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="alvarito.js"></script>
+</body>
+</html>
